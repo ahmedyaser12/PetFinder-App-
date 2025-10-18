@@ -10,7 +10,11 @@ class DioInterceptor extends Interceptor {
       "accept": "application/json",
       "content-type": "application/json",
     });
-
+    // add api key
+    options.headers.addAll({
+      "x-api-key":
+          "live_klFW3teohiJ5D3Cvbw9MFWs78ZdRM4bIm3rjxlklbPQVIZppHxicpgpMEPAIZSUT}",
+    });
     handler.next(options);
   }
 

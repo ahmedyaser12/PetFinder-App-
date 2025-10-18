@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:petfinder_app/feature/home/presentaion/cubit/cat_cubit.dart';
+
+import '../../data/model/beard_model.dart';
 
 class PetListSection extends StatelessWidget {
   PetListSection({super.key});
@@ -36,11 +40,24 @@ class PetListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: pets.length,
-      itemBuilder: (context, index) {
-        return PetCard(pet: pets[index]);
+    return BlocBuilder<CatCubit, CatState>(
+      builder: (context, state) {
+        if (state is GetBreadLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is GetBreadFailure) {
+          return Center(child: Text(state.message));
+        }
+        if (state is GetBreadSuccess) {
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: pets.length,
+            itemBuilder: (context, index) {
+              return PetCard(pet: state.breads[index]);
+            },
+          );
+        }
+        return Container();
       },
     );
   }
@@ -48,9 +65,9 @@ class PetListSection extends StatelessWidget {
 
 // Pet Card Widget
 class PetCard extends StatelessWidget {
-  final Pet pet;
+  final Cat pet;
 
-  const PetCard({Key? key, required this.pet}) : super(key: key);
+  const PetCard({super.key, required this.pet});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +83,7 @@ class PetCard extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.network(
-              pet.imageUrl,
+              'https://cdn2.thecatapi.com/images/${pet.referenceImageId}.jpg',
               width: 80,
               height: 80,
               fit: BoxFit.cover,
@@ -93,11 +110,11 @@ class PetCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  pet.gender,
+                  pet.temperament ?? '',
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
                 Text(
-                  pet.age,
+                  pet.lifeSpan ?? '',
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 4),
@@ -106,7 +123,7 @@ class PetCard extends StatelessWidget {
                     const Icon(Icons.location_on, size: 16, color: Colors.red),
                     const SizedBox(width: 4),
                     Text(
-                      pet.distance,
+                      pet.origin ?? '',
                       style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     ),
                   ],

@@ -1,6 +1,4 @@
 class ApiConstants {
-  static const String baseUrl = "https://accessories-eshop.runasp.net";
-  static const String register = "/api/auth/register";
-  static const String login = "/api/auth/login";
-  static const String categories = "/api/categories";
+  static const String baseUrl = "https://api.thecatapi.com/v1";
+  static const String beards = "/breeds";
 }
